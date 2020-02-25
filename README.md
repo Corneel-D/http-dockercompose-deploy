@@ -5,7 +5,7 @@ This tool can be installed on a server that is controlled by [docker-compose](ht
  1. Navigate to a desired folder for your deployment setup.
  2. Add a `docker-compose.yml` file and copy the contents from [this repo's file](https://github.com/gleerman/http-dockercompose-deploy/blob/master/docker-compose.yml) into it.
  3. Create a file `deployment/docker-compose.yml` with the contents of the docker-compose setup you want to deploy.
- 4. Adjust the `docker-compose.yml` from step 2 so that the `DOCKER_COMPOSE_SERVICES` environment variable is set to a space-separated list of services. These services should match with those in the `deployment/docker-compose.yml` file that you added in step 3.
+ 4. Adjust the `docker-compose.yml` from step 2 so that the `DOCKER_COMPOSE_SERVICES` environment variable is set to a space-separated list of services. These services should match with those in the `deployment/docker-compose.yml` file that you added in step 3. Optionally set [`docker-compose down` options](https://docs.docker.com/compose/reference/down/) using the `DOCKER_COMPOSE_DOWN_OPTIONS` environment variable.
  5. Launch with the following command in the root path of the project: `docker-compose up -d deployer`
  6. Check the logs via: `docker-compose logs -f deployer`
 
