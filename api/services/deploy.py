@@ -35,13 +35,12 @@ class DeployService:
         return cmd
         
     def getDownCommand(self):
+        cmd = self.getBaseCommand() + " down"
+
         options = os.environ['DOCKER_COMPOSE_DOWN_OPTIONS']
         options = options.strip()
-
-        if not options or len(options) < 1:
-            cmd = self.getBaseCommand() + " down"
-        else:
-            cmd = self.getBaseCommand() + " down " + options
+        if options and len(options) > 0:
+            cmd = cmd + " " + options
 
         return cmd
         
