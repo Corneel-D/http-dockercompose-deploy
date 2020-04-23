@@ -6,12 +6,22 @@ This tool can be installed on a server that is controlled by [docker-compose](ht
 1. Navigate to a desired folder for your deployment setup.
 2. Add a `docker-compose.yml` file and copy the contents from [this repo's file](https://github.com/gleerman/http-dockercompose-deploy/blob/master/docker-compose.yml) into it.
 3. Create a file `deployment/docker-compose.yml` with the contents of the docker-compose setup you want to deploy.
-4. Adjust the `docker-compose.yml` from step 2 so that the `DOCKER_COMPOSE_SERVICES` environment variable is set to a space-separated list of services. These services should match with those in the `deployment/docker-compose.yml` file that you added in step 3. Optionally set [`docker-compose down` options](https://docs.docker.com/compose/reference/down/) using the `DOCKER_COMPOSE_DOWN_OPTIONS` environment variable.
+4. Adjust the `docker-compose.yml` from step 2 so that the `DOCKER_COMPOSE_SERVICES` environment variable is set to a space-separated list of services. These services should match with those in the `deployment/docker-compose.yml` file that you added in step 3. Optionally set [`docker-compose down` options using environment variables](#docker-compose-down-options).
 5.  Create a file with credentials for authenticating with the registry if needed - see below "Authenticating with registries"
 6.  Launch with the following command in the root path of the project: `docker-compose up -d deployer`
 7.  Check the logs via: `docker-compose logs -f deployer`
 
 The token is available in the logs. Perform a HTTP POST request to `serverdomain:12045/deploy` with the `Authorization` header set to `Bearer <TOKEN>` to deploy an update
+
+#### `docker-compose down` options
+Supported options:
+
+- `--rmi type`: set `DOCKER_COMPOSE_DOWN_OPTIONS_RMI` to one of `all` or `local` to enable the option
+- ` --volumes`: set `DOCKER_COMPOSE_DOWN_OPTIONS_VOLUMES=true` to `true` to enable the option
+- `--remove-orphans`: set `DOCKER_COMPOSE_DOWN_OPTIONS_REMOVE_ORPHANS` to `true` to enable the option
+- `--timeout TIMEOUT`: set `DOCKER_COMPOSE_DOWN_OPTIONS_TIMEOUT` to an integer to enable the option
+
+The command reference of `docker-compose down` can be found [here](https://docs.docker.com/compose/reference/down/) for more information about the options
 
 ## Authenticating with registries
 
