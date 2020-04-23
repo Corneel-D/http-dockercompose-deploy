@@ -35,33 +35,28 @@ class DeployService:
     def getPullCommand(self):
         cmd = self.getBaseCommand() + " pull " + self.services
         return cmd
+
+    def getEnvironmentVar(self, varName):
+        return os.environ.get(varName, "").strip().lower()
         
     def getDownCommand(self):
         cmd = self.getBaseCommand() + " down"
 
-        rmi = os.environ.get("DOCKER_COMPOSE_DOWN_OPTIONS_RMI", "")
-        rmi = rmi.strip().lower()
-
+        rmi = self.getEnvironmentVar("DOCKER_COMPOSE_DOWN_OPTIONS_RMI")
         if rmi == "all":
             cmd = cmd + " --rmi all"
         elif rmi == "local":
             cmd = cmd + " --rmi local"
 
-        volumes = os.environ.get("DOCKER_COMPOSE_DOWN_OPTIONS_VOLUMES", "")
-        volumes = volumes.strip().lower()
-
+        volumes = self.getEnvironmentVar("DOCKER_COMPOSE_DOWN_OPTIONS_VOLUMES")
         if volumes == "true":
             cmd = cmd + " --volumes"
 
-        removeOrphans = os.environ.get("DOCKER_COMPOSE_DOWN_OPTIONS_REMOVE_ORPHANS", "")
-        removeOrphans = removeOrphans.strip().lower()
-
+        removeOrphans = self.getEnvironmentVar("DOCKER_COMPOSE_DOWN_OPTIONS_REMOVE_ORPHANS")
         if removeOrphans == "true":
             cmd = cmd + " --remove-orphans"
 
-        timeout = os.environ.get("DOCKER_COMPOSE_DOWN_OPTIONS_TIMEOUT", "")
-        timeout = timeout.strip()
-
+        timeout = self.getEnvironmentVar("DOCKER_COMPOSE_DOWN_OPTIONS_TIMEOUT")
         if timeout:
             try:
                 int(timeout)
