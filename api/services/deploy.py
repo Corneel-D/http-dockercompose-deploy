@@ -3,6 +3,7 @@ import sys
 import random
 import string
 import subprocess
+import logging
 
 
 DOCKER_COMPOSE_PATH = "/srv/deployment/docker-compose.yml"
@@ -38,12 +39,38 @@ class DeployService:
     def getDownCommand(self):
         cmd = self.getBaseCommand() + " down"
 
-        options = os.environ.get('DOCKER_COMPOSE_DOWN_OPTIONS', '')
-        
-        options = options.strip()
+        rmi = os.environ.get("DOCKER_COMPOSE_DOWN_OPTIONS_RMI", "")
+        rmi = rmi.strip().lower()
 
-        if len(options) > 0:
-            cmd = cmd + " " + options
+        if rmi == "all":
+            cmd = cmd + " --rmi all"
+        elif rmi == "local":
+            cmd = cmd + " --rmi local"
+
+        volumes = os.environ.get("DOCKER_COMPOSE_DOWN_OPTIONS_VOLUMES", "")
+        volumes = volumes.strip().lower()
+
+        if volumes == "true":
+            cmd = cmd + " --volumes"
+
+        removeOrphans = os.environ.get("DOCKER_COMPOSE_DOWN_OPTIONS_REMOVE_ORPHANS", "")
+        removeOrphans = removeOrphans.strip().lower()
+
+        if removeOrphans == "true":
+            cmd = cmd + " --remove-orphans"
+
+        timeout = os.environ.get("DOCKER_COMPOSE_DOWN_OPTIONS_TIMEOUT", "")
+        timeout = timeout.strip()
+
+        if timeout:
+            try:
+                int(timeout)
+                
+                if timeout > 0:
+                    cmd = cmd + " --timeout " + timeout
+
+            except ValueError:
+                logging.warn('ignoring DOCKER_COMPOSE_DOWN_OPTIONS_TIMEOUT as it is not a valid integer')
 
         return cmd
         
